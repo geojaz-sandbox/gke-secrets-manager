@@ -1,6 +1,6 @@
 # Readme
 
-This repo demonstrates how to inject versioned secrets into GKE pods at runtime using a custom (MutatingAdmissionWebhook)[https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-are-they] and (Pod Workload Identity)[https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity].
+This repo demonstrates how to inject versioned secrets into GKE pods at runtime using a custom [MutatingAdmissionWebhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-are-they) and [Pod Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity).
 
 It is bsaed on https://github.com/GoogleCloudPlatform/berglas/tree/master/examples/kubernetes
 
