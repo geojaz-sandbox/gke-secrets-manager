@@ -1,0 +1,31 @@
+# -----------------------------------------------------------------------------
+#  NOTE
+#  This config was copied from https://github.com/quibitv/example-schema
+#  Before making changes directly to this file, consider if your changes can
+#  be included in the template so that other repositories can take advantage
+#  of your updates
+#  ----------------------------------------------------------------------------
+version: 2
+jobs:
+  build:
+    docker:
+      - image: gcr.io/quibi-public/circle-schema:8
+    steps:
+      - checkout
+      - run: prototool compile
+      - run: prototool lint
+  test:
+    docker:
+      - image: gcr.io/quibi-public/circle-test-golang:0.0.4
+    steps:
+      - checkout
+      - run: golangci-lint run
+      - run:
+          name: Start GCloud Datastore Emulator
+          command: gcloud -q beta emulators datastore start --data-dir ./gcloud_emulators/datastore --consistency=1.0
+          background: true
+      - run:
+          name: Setup GCloud Env Variables and Go Test
+          command: |
+            $(gcloud beta emulators datastore env-init --data-dir ./gcloud_emulators/datastore)
+            go test -p 1 -parallel 1 ./...

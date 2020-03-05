@@ -1,0 +1,14 @@
+# -----------------------------------------------------------------------------
+#  NOTE
+#  This config was copied from https://github.com/quibitv/example-schema
+#  Before making changes directly to this file, consider if your changes can
+#  be included in the template so that other repositories can take advantage
+#  of your updates
+#  ----------------------------------------------------------------------------
+protoc:
+  version: 3.7.1
+lint:
+  group: uber1
+  rules:
+    remove:
+      - FILE_OPTIONS_EQUAL_GO_PACKAGE_PB_SUFFIX
