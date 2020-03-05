@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: app1
+  name: app1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+      name: app1
+    spec:
+      serviceAccountName: berglas-reader-gke
+      containers:
+      - name: app1
+        image: sethvargo/envserver
+        imagePullPolicy: Always
+        command: ["/bin/envserver"]
+        env:
+        - name: my-secret
+          value: berglas://pso-quibi-qsecrets/foo
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1
+  labels:
+    app: app1
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: app1
