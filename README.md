@@ -2,14 +2,14 @@
 
 This repo demonstrates how to inject versioned secrets into GKE pods at runtime using a custom [MutatingAdmissionWebhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-are-they) and [Pod Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity).
 
-It is bsaed on https://github.com/GoogleCloudPlatform/berglas/tree/master/examples/kubernetes
+It's based on https://github.com/GoogleCloudPlatform/berglas/tree/master/examples/kubernetes but extends this demo to use workload identity instead of the GKE service account.
 
 # Setup berglas and secret store
 
 https://github.com/GoogleCloudPlatform/berglas
 `berglas` is a CLI for storing and retrieving secrets in GCP. It works both with secrets encrypted with Cloud KMS/stored in GCS and is compatible with Secret Manager.
 We chose to base this integration on berglas because it could be integrated into Quibi services with minimal modification. When Secret Manager becomes more mature and the GKE
-integrations become more full-featured, berglas has a mode to migrate these secrets.
+integrations become more full-featured, berglas has a mode to migrate all of your stored secrets into Secrets Manager.
 
 Follow along with https://github.com/GoogleCloudPlatform/berglas#setup steps 1 thru 6.
 These steps will use beglas to bootstrap your secret store bucket, KMS keyring and key.
@@ -83,11 +83,27 @@ sed "s|REPLACE_WITH_YOUR_URL|$ENDPOINT|" deploy/webhook.yaml | kubectl apply -f 
 
 # Test time!
 
-Create a secret:
+Create a secret, note the generation ID:
 ```
-berglas create ${BUCKET_ID}/foo 'this data has been decrypted!' \
-  --key projects/${PROJECT_ID}/locations/global/keyRings/berglas/cryptoKeys/berglas-key
-Successfully created secret: foo
+berglas create berglas://pso-quibi-qsecrets/my-secret1 "this value is secret. first edition" \
+  --key projects/pso-quibi/locations/global/keyRings/berglas/cryptoKeys/berglas-key
+Successfully created secret [my-secret1] with generation [1583534284391004]
+
+berglas access berglas://pso-quibi-qsecrets/my-secret1#1583534284391004
+this value is secret. first edition
+```
+
+Update the secret
+```
+berglas update berglas://pso-quibi-qsecrets/my-secret1 "this is a secret value. second edition"
+  --key projects/pso-quibi/locations/global/keyRings/berglas/cryptoKeys/berglas-key
+Successfully updated secret [my-secret1] to generation [1583534416742067]
+
+berglas access berglas://pso-quibi-qsecrets/my-secret1#1583534284391004
+this value is secret. first edition
+
+berglas access berglas://pso-quibi-qsecrets/my-secret1#1583534416742067
+this is a secret value. second edition
 ```
 
 Create an app to read the secret (note the syntax for secret references):
@@ -96,8 +112,8 @@ Create an app to read the secret (note the syntax for secret references):
 Check the value:
 ```
 (in one terminal)
-kubectl port-forward app1 8080:8080
+kubectl port-forward deployment/app1 8080:8080
 (in a second)
-curl localhost:8080
+curl localhost:8080 | jq .
 ```
-The decypted value will be included in this output.
+The decypted values will be included in this output.

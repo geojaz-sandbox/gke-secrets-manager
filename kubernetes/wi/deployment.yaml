@@ -23,8 +23,10 @@ spec:
         imagePullPolicy: Always
         command: ["/bin/envserver"]
         env:
-        - name: my-secret
-          value: berglas://pso-quibi-qsecrets/foo
+        - name: my-secret-v1
+          value: berglas://pso-quibi-qsecrets/my-secret1#1583534284391004
+        - name: my-secret-v2
+          value: berglas://pso-quibi-qsecrets/my-secret1#1583534416742067
         resources:
           limits:
             cpu: 100m
