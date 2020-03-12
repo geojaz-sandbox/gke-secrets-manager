@@ -27,6 +27,8 @@ spec:
           value: berglas://pso-quibi-qsecrets/my-secret1#1583534284391004
         - name: my-secret-v2
           value: berglas://pso-quibi-qsecrets/my-secret1#1583534416742067
+        # - name: secret-manager-secret
+        #   value: sm://pso-quibi-qsecrets/my-secret
         resources:
           limits:
             cpu: 100m
