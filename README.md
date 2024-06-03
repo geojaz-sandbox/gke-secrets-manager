@@ -1,3 +1,10 @@
+# DEPRECATED
+
+There are much better ways to do this in modern times, and this repo has potential security issues, so I'm gonna archive it!
+
+I'm not a jerk, so I won't leave you totally hanging- if you were thinking about using this solution, I'd suggest 
+giving https://cloud.google.com/secret-manager/docs/secret-manager-managed-csi-component a look. It's currently supported and much easier :D 
+
 # Readme
 
 This repo demonstrates how to inject versioned secrets into GKE pods at runtime using a custom [MutatingAdmissionWebhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#what-are-they) and [Pod Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity).
